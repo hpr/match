@@ -15,7 +15,9 @@ export default function App() {
   const [discipline, setDiscipline] = useState<string | null>(null);
   const [response, setResponse] = useState<string | null>(null);
 
-  const isReady = !!(athleteIds.length && discipline && athleteIds.every(aid => athleteYears[aid]));
+  const isReady = !!(athleteIds.length && discipline && athleteIds.every((aid) => athleteYears[aid]));
+
+  const gender: 'Men' | 'Women' | undefined = athleteInfo[athleteIds.find((aid) => athleteInfo[aid].SearchCompetitor.gender)!]?.SearchCompetitor?.gender;
 
   return (
     <Stack justify="center" align="center">
@@ -23,6 +25,7 @@ export default function App() {
         <Stack justify="center" align="center">
           <Group position="center">
             <AthleteAutocomplete
+              gender={gender}
               addAthlete={async (id) => {
                 if (!athleteIds.includes(id)) {
                   setAthleteIds([...athleteIds, id]);
@@ -83,7 +86,7 @@ export default function App() {
               </Table>
             ) : (
               <Text italic style={{ textAlign: 'center' }}>
-                Add athletes above...
+                Add athletes of the same category above...
               </Text>
             )}
           </Paper>

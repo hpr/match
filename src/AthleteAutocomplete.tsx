@@ -31,11 +31,13 @@ const AutoCompleteItem = forwardRef<HTMLDivElement, ItemProps>(({ athlete, ...ot
 });
 
 export const AthleteAutocomplete = ({
+  gender = undefined,
   addAthlete,
   disabled = false,
   athleteInfo = {},
   setAthleteInfo = () => {},
 }: {
+  gender: 'Men' | 'Women' | undefined;
   addAthlete: (id: string) => void;
   disabled: boolean;
   athleteInfo: AthleteInfo;
@@ -62,7 +64,13 @@ export const AthleteAutocomplete = ({
     <Autocomplete
       disabled={disabled}
       sx={{ width: 400 }}
-      filter={() => true}
+      filter={(_, item) => {
+        const athlete = item.athlete as SearchCompetitor;
+        if (athlete.gender && gender) {
+          return athlete.gender === gender;
+        }
+        return true
+      }}
       label="Add athlete"
       placeholder="e.g. Asbel Kiprop"
       data={data}
