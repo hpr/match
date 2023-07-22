@@ -40,7 +40,7 @@ export default function App() {
               setAthleteInfo={setAthleteInfo}
             />
           </Group>
-          <Paper withBorder m="sm" mb={0} p="md" sx={{ width: 590 }}>
+          <Paper withBorder m="sm" mb={0} p="md" sx={{ width: 610 }}>
             {athleteIds.length ? (
               <Table verticalSpacing="md">
                 <tbody>
