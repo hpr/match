@@ -10,6 +10,7 @@ interface ItemProps extends SelectItemProps {
 
 const AutoCompleteItem = forwardRef<HTMLDivElement, ItemProps>(({ athlete, ...others }: ItemProps, ref) => {
   const { givenName, familyName, disciplines, aaAthleteId } = athlete;
+  const shortDisciplines = disciplines.split(', ').slice(0, 2).join(', ');
   return (
     <div ref={ref} {...others}>
       <Group noWrap>
@@ -22,7 +23,7 @@ const AutoCompleteItem = forwardRef<HTMLDivElement, ItemProps>(({ athlete, ...ot
             {givenName} {familyName}
           </Text>
           <Text size="xs" color="dimmed">
-            {disciplines}
+            {shortDisciplines}
           </Text>
         </div>
       </Group>
@@ -52,7 +53,7 @@ export const AthleteAutocomplete = ({
       setCachedResults({ ...cachedResults, [athlete]: results });
       setAthleteInfo({
         ...athleteInfo,
-        ...Object.fromEntries(results.map((res) => [res.aaAthleteId, { ...athleteInfo[res.aaAthleteId], SearchCompetitor: res }])),
+        ...Object.fromEntries(results.map((res) => [res.aaAthleteId, res])),
       });
       setResults(results);
     })();
@@ -63,13 +64,13 @@ export const AthleteAutocomplete = ({
   return (
     <Autocomplete
       disabled={disabled}
-      sx={{ width: 400 }}
+      sx={{ width: '100%' }}
       filter={(_, item) => {
         const athlete = item.athlete as SearchCompetitor;
         if (athlete.gender && gender) {
           return athlete.gender === gender;
         }
-        return true
+        return true;
       }}
       label="Add athlete"
       placeholder="e.g. Asbel Kiprop"

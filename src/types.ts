@@ -18,10 +18,7 @@ export type CompetitorBasicInfo = {
 };
 
 export type AthleteInfo = {
-  [id: string]: {
-    SearchCompetitor: SearchCompetitor;
-    CompetitorBasicInfo?: CompetitorBasicInfo;
-  };
+  [id: string]:  SearchCompetitor;
 };
 
 export type ResultsByYearResult = {

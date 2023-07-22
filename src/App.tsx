@@ -1,7 +1,7 @@
 import { Avatar, Button, Group, Paper, Stack, Table, Text, ActionIcon, Select } from '@mantine/core';
 import React, { useEffect, useState } from 'react';
 import { AthleteAutocomplete } from './AthleteAutocomplete';
-import { AthleteInfo } from './types';
+import { AthleteInfo, CompetitorBasicInfo } from './types';
 import { competitorBasicInfo, getAvatarUrl } from './util';
 import { Trash } from 'tabler-icons-react';
 import { SERVER_URL, commonDisciplines } from './const';
@@ -10,6 +10,7 @@ import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
 export default function App() {
   const [athleteIds, setAthleteIds] = useState<string[]>([]);
   const [athleteInfo, setAthleteInfo] = useState<AthleteInfo>({});
+  const [athleteBasicInfo, setAthleteBasicInfo] = useState<{ [id: string]: CompetitorBasicInfo }>({});
   const [athleteYears, setAthleteYears] = useState<{ [id: string]: string }>({});
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [discipline, setDiscipline] = useState<string | null>(null);
@@ -17,7 +18,7 @@ export default function App() {
 
   const isReady = !!(athleteIds.length && discipline && athleteIds.every((aid) => athleteYears[aid]));
 
-  const gender: 'Men' | 'Women' | undefined = athleteInfo[athleteIds.find((aid) => athleteInfo[aid].SearchCompetitor.gender)!]?.SearchCompetitor?.gender;
+  const gender: 'Men' | 'Women' | undefined = athleteInfo[athleteIds.find((aid) => athleteInfo[aid].gender)!]?.gender;
 
   return (
     <Stack justify="center" align="center">
@@ -32,7 +33,7 @@ export default function App() {
                   const basicInfo = await competitorBasicInfo(id);
                   const activeYears = basicInfo.resultsByYear.activeYears;
                   setAthleteYears({ ...athleteYears, [id]: activeYears[0] });
-                  setAthleteInfo({ ...athleteInfo, [id]: { ...athleteInfo[id], CompetitorBasicInfo: basicInfo } });
+                  setAthleteBasicInfo({ ...athleteBasicInfo, [id]: basicInfo });
                 }
               }}
               disabled={athleteIds.length >= 8}
@@ -40,13 +41,14 @@ export default function App() {
               setAthleteInfo={setAthleteInfo}
             />
           </Group>
-          <Paper withBorder m="sm" mb={0} p="md" sx={{ width: 610 }}>
+          <Paper withBorder m="sm" mb={0} p="md" sx={{ width: '100%' }}>
             {athleteIds.length ? (
               <Table verticalSpacing="md">
                 <tbody>
                   {athleteIds.map((aid) => {
-                    const { givenName, familyName, aaAthleteId, disciplines } = athleteInfo[aid].SearchCompetitor;
-                    const activeYears = athleteInfo[aid].CompetitorBasicInfo?.resultsByYear.activeYears;
+                    const { givenName, familyName, aaAthleteId, disciplines } = athleteInfo[aid];
+                    const shortDisciplines = disciplines.split(', ').slice(0, 2).join(', ');
+                    const activeYears = athleteBasicInfo[aid]?.resultsByYear?.activeYears;
                     return (
                       <tr key={aaAthleteId}>
                         <td>
@@ -60,7 +62,7 @@ export default function App() {
                                 {givenName} {familyName}
                               </Text>
                               <Text c="dimmed" fz="xs">
-                                {disciplines}
+                                {shortDisciplines}
                               </Text>
                             </div>
                           </Group>
@@ -104,7 +106,7 @@ export default function App() {
                   body: JSON.stringify({
                     athletes: athleteIds.map((id) => ({ id, year: athleteYears[id] })),
                     discipline,
-                    gender: athleteInfo[athleteIds.find((aid) => athleteInfo[aid].SearchCompetitor.gender)!]?.SearchCompetitor.gender ?? 'Men',
+                    gender,
                   }),
                 })
               ).json();
