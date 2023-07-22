@@ -18,6 +18,14 @@ export const SearchCompetitors = `query SearchCompetitors($query: String, $gende
     __typename
   }
 }`;
+export const GetCompetitorBasicInfo = `
+query GetCompetitorBasicInfo($id: Int, $urlSlug: String) {
+  competitor: getSingleCompetitor(id: $id, urlSlug: $urlSlug) {
+    resultsByYear {
+      activeYears
+    }
+  }
+}`;
 export const disciplines = [
   '50 Metres',
   '55 Metres',

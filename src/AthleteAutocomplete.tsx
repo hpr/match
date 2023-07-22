@@ -45,10 +45,13 @@ export const AthleteAutocomplete = ({
   const [debouncedAthlete] = useDebouncedValue(athlete, 500);
   const [cachedResults, setCachedResults] = useState<{ [k: string]: SearchCompetitor[] }>({});
   useEffect(() => {
-    (async () => {        
-      const results = cachedResults[athlete] ?? await searchCompetitors(debouncedAthlete);
+    (async () => {
+      const results = cachedResults[athlete] ?? (await searchCompetitors(debouncedAthlete));
       setCachedResults({ ...cachedResults, [athlete]: results });
-      setAthleteInfo({ ...athleteInfo, ...Object.fromEntries(results.map((res) => [res.aaAthleteId, res])) });
+      setAthleteInfo({
+        ...athleteInfo,
+        ...Object.fromEntries(results.map((res) => [res.aaAthleteId, { ...athleteInfo[res.aaAthleteId], SearchCompetitor: res }])),
+      });
       setResults(results);
     })();
   }, [debouncedAthlete]);

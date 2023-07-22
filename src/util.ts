@@ -1,5 +1,5 @@
-import { GRAPHQL_ENDPOINT, SearchCompetitors, headers } from './const';
-import { SearchCompetitor } from './types';
+import { GRAPHQL_ENDPOINT, GetCompetitorBasicInfo, SearchCompetitors, headers } from './const';
+import { CompetitorBasicInfo, SearchCompetitor } from './types';
 
 export const searchCompetitors = async (query: string): Promise<SearchCompetitor[]> => {
   const { data } = await (
@@ -14,6 +14,21 @@ export const searchCompetitors = async (query: string): Promise<SearchCompetitor
     })
   ).json();
   return data.searchCompetitors;
+};
+
+export const competitorBasicInfo = async (id: string): Promise<CompetitorBasicInfo> => {
+  const { data } = await (
+    await fetch(GRAPHQL_ENDPOINT, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        operationName: 'GetCompetitorBasicInfo',
+        query: GetCompetitorBasicInfo,
+        variables: { id },
+      }),
+    })
+  ).json();
+  return data.competitor;
 };
 
 export const getAvatarUrl = (aaAthleteId: string) => `https://media.aws.iaaf.org/athletes/${aaAthleteId}.jpg`;
