@@ -4,7 +4,7 @@ import { AthleteAutocomplete } from './AthleteAutocomplete';
 import { AthleteInfo } from './types';
 import { competitorBasicInfo, getAvatarUrl } from './util';
 import { Trash } from 'tabler-icons-react';
-import { SERVER_URL, disciplines } from './const';
+import { SERVER_URL, commonDisciplines } from './const';
 import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
 
 export default function App() {
@@ -40,7 +40,7 @@ export default function App() {
               setAthleteInfo={setAthleteInfo}
             />
           </Group>
-          <Paper withBorder m="sm" mb={0} p="md" sx={{ width: 550 }}>
+          <Paper withBorder m="sm" mb={0} p="md" sx={{ width: 590 }}>
             {athleteIds.length ? (
               <Table verticalSpacing="md">
                 <tbody>
@@ -90,7 +90,7 @@ export default function App() {
               </Text>
             )}
           </Paper>
-          <Select label="Race Distance?" searchable data={disciplines} value={discipline} onChange={setDiscipline} />
+          <Select label="Race Distance?" searchable data={commonDisciplines} value={discipline} onChange={setDiscipline} />
           <Button
             color="green"
             size="lg"
