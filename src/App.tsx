@@ -1,4 +1,4 @@
-import { Avatar, Button, Group, Paper, Stack, Table, Text, ActionIcon, Select } from '@mantine/core';
+import { Avatar, Button, Group, Paper, Stack, Table, Text, ActionIcon, Select, CopyButton } from '@mantine/core';
 import React, { useEffect, useState } from 'react';
 import { AthleteAutocomplete } from './AthleteAutocomplete';
 import { AthleteInfo, CompetitorBasicInfo } from './types';
@@ -120,7 +120,18 @@ export default function App() {
       </Paper>
       {response && (
         <Paper withBorder m="xl" p="md" mt="xs">
-          <ReactMarkdown>{response}</ReactMarkdown>
+          <Stack align="center">
+            <CopyButton value={response}>
+              {({ copied, copy }) => (
+                <Button mb={-10} size="sm" color={copied ? 'teal' : 'blue'} onClick={copy}>
+                  {copied ? 'Copied to clipboard' : 'Copy to clipboard'}
+                </Button>
+              )}
+            </CopyButton>
+            <div>
+              <ReactMarkdown>{response}</ReactMarkdown>
+            </div>
+          </Stack>
         </Paper>
       )}
     </Stack>
