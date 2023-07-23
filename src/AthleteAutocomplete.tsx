@@ -64,7 +64,7 @@ export const AthleteAutocomplete = ({
   return (
     <Autocomplete
       disabled={disabled}
-      sx={{ width: '100%' }}
+      sx={{ width: '100%', minWidth: 300 }}
       filter={(_, item) => {
         const athlete = item.athlete as SearchCompetitor;
         if (athlete.gender && gender) {
