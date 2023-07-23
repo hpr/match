@@ -82,8 +82,9 @@ export const AthleteAutocomplete = ({
         <Button
           disabled={disabled}
           onClick={() => {
-            const id = athlete.split('#').at(-1);
-            if (id) {
+            const parts = athlete.split('#');
+            const id = parts.at(-1);
+            if (parts.length === 2 && id) {
               addAthlete(id);
               setAthlete('');
             }
