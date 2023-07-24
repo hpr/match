@@ -1,9 +1,9 @@
-import { Avatar, Button, Group, Paper, Stack, Table, Text, ActionIcon, Select, CopyButton } from '@mantine/core';
+import { Avatar, Button, Group, Paper, Stack, Table, Text, ActionIcon, Select, CopyButton, Alert } from '@mantine/core';
 import React, { useEffect, useState } from 'react';
 import { AthleteAutocomplete } from './AthleteAutocomplete';
 import { AthleteInfo, CompetitorBasicInfo } from './types';
 import { competitorBasicInfo, getAvatarUrl } from './util';
-import { Trash } from 'tabler-icons-react';
+import { InfoCircle, Trash } from 'tabler-icons-react';
 import { SERVER_URL, commonDisciplines } from './const';
 import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
 
@@ -16,6 +16,7 @@ export default function App() {
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [discipline, setDiscipline] = useState<string | null>(null);
   const [response, setResponse] = useState<string | null>(null);
+  const [isSnapshot, setIsSnapshot] = useState<boolean>(false);
   const [snapshotParams, setSnapshotParams] = useState<{
     athleteYears: { [id: string]: string };
     athleteIds: string[];
@@ -45,12 +46,18 @@ export default function App() {
       setAthleteBasicInfo(athleteBasicInfo);
       setResponse(response);
       setUrlAthleteInfo(athleteInfo);
+      setIsSnapshot(true);
       setSnapshotParams({ athleteYears, athleteIds, discipline: discipline!, athleteInfo, athleteBasicInfo });
     }
   }, []);
 
   return (
     <Stack justify="center" align="center">
+      {isSnapshot && (
+        <Alert mt="xl" mb={-10} icon={<InfoCircle size="1rem" />} title="Snapshot Mode" color="blue" withCloseButton onClose={() => setIsSnapshot(false)}>
+          You're viewing a snapshot from a previously shared prediction. Edit the parameters below to have TrackBot predict your own match races.
+        </Alert>
+      )}
       <Paper withBorder m="xl" p="md" mb="xs">
         <Stack justify="center" align="center">
           <Group position="center">
@@ -128,6 +135,7 @@ export default function App() {
             loading={isGenerating}
             disabled={!isReady || isGenerating}
             onClick={async () => {
+              setIsSnapshot(false);
               setIsGenerating(true);
               setResponse(null);
               setSnapshotParams({
