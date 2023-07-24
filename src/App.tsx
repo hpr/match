@@ -10,15 +10,44 @@ import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
 export default function App() {
   const [athleteIds, setAthleteIds] = useState<string[]>([]);
   const [athleteInfo, setAthleteInfo] = useState<AthleteInfo>({});
+  const [urlAthleteInfo, setUrlAthleteInfo] = useState<AthleteInfo>({});
   const [athleteBasicInfo, setAthleteBasicInfo] = useState<{ [id: string]: CompetitorBasicInfo }>({});
   const [athleteYears, setAthleteYears] = useState<{ [id: string]: string }>({});
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [discipline, setDiscipline] = useState<string | null>(null);
   const [response, setResponse] = useState<string | null>(null);
+  const [snapshotParams, setSnapshotParams] = useState<{
+    athleteYears: { [id: string]: string };
+    athleteIds: string[];
+    discipline: string;
+    athleteInfo: AthleteInfo;
+    athleteBasicInfo: { [id: string]: CompetitorBasicInfo };
+  } | null>(null);
 
   const isReady = !!(athleteIds.length && discipline && athleteIds.every((aid) => athleteYears[aid]));
 
-  const gender: 'Men' | 'Women' | undefined = athleteInfo[athleteIds.find((aid) => athleteInfo[aid].gender)!]?.gender;
+  const gender: 'Men' | 'Women' | undefined = athleteInfo[athleteIds.find((aid) => athleteInfo[aid]?.gender)!]?.gender;
+
+  const combinedAthleteInfo = { ...urlAthleteInfo, ...athleteInfo };
+
+  useEffect(() => {
+    if (window.location.search) {
+      const params = new URLSearchParams(window.location.search);
+      const athleteYears = JSON.parse(params.get('athleteYears') ?? '{}');
+      const athleteIds = JSON.parse(params.get('athleteIds') ?? '[]');
+      const discipline = params.get('discipline');
+      const athleteInfo = JSON.parse(params.get('athleteInfo') ?? '{}');
+      const athleteBasicInfo = JSON.parse(params.get('athleteBasicInfo') ?? '{}');
+      const response = window.atob(params.get('response') ?? '');
+      setAthleteYears(athleteYears);
+      setAthleteIds(athleteIds);
+      setDiscipline(discipline);
+      setAthleteBasicInfo(athleteBasicInfo);
+      setResponse(response);
+      setUrlAthleteInfo(athleteInfo);
+      setSnapshotParams({ athleteYears, athleteIds, discipline: discipline!, athleteInfo, athleteBasicInfo });
+    }
+  }, []);
 
   return (
     <Stack justify="center" align="center">
@@ -46,16 +75,16 @@ export default function App() {
               <Table verticalSpacing="md">
                 <tbody>
                   {athleteIds.map((aid) => {
-                    const { givenName, familyName, aaAthleteId, disciplines } = athleteInfo[aid];
-                    const shortDisciplines = disciplines.split(', ').slice(0, 2).join(', ');
+                    const { givenName, familyName, aaAthleteId, disciplines } = combinedAthleteInfo[aid];
+                    const shortDisciplines = disciplines?.split(', ').slice(0, 2).join(', ');
                     const activeYears = athleteBasicInfo[aid]?.resultsByYear?.activeYears;
                     return (
                       <tr key={aaAthleteId}>
                         <td>
                           <Group spacing="sm">
                             <Avatar size={40} src={getAvatarUrl(aaAthleteId)} radius={40}>
-                              {givenName[0]}
-                              {familyName[0]}
+                              {givenName?.[0]}
+                              {familyName?.[0]}
                             </Avatar>
                             <div>
                               <Text fz="sm" fw={500}>
@@ -100,6 +129,14 @@ export default function App() {
             disabled={!isReady || isGenerating}
             onClick={async () => {
               setIsGenerating(true);
+              setResponse(null);
+              setSnapshotParams({
+                athleteIds,
+                athleteYears,
+                discipline: discipline!,
+                athleteInfo: Object.fromEntries(athleteIds.map((aid) => [aid, combinedAthleteInfo[aid]])),
+                athleteBasicInfo: Object.fromEntries(athleteIds.map((aid) => [aid, athleteBasicInfo[aid]])),
+              });
               const { response } = await (
                 await fetch(SERVER_URL, {
                   method: 'POST',
@@ -121,10 +158,24 @@ export default function App() {
       {response && (
         <Paper withBorder m="xl" p="md" mt="xs">
           <Stack align="center">
-            <CopyButton value={response}>
+            <CopyButton
+              value={
+                window.location.origin +
+                window.location.pathname +
+                '?' +
+                new URLSearchParams({
+                  athleteIds: JSON.stringify(snapshotParams?.athleteIds),
+                  athleteYears: JSON.stringify(snapshotParams?.athleteYears),
+                  athleteInfo: JSON.stringify(snapshotParams?.athleteInfo),
+                  athleteBasicInfo: JSON.stringify(snapshotParams?.athleteBasicInfo),
+                  discipline: snapshotParams?.discipline!,
+                  response: window.btoa(response),
+                })
+              }
+            >
               {({ copied, copy }) => (
                 <Button mb={-10} size="sm" color={copied ? 'teal' : 'blue'} onClick={copy}>
-                  {copied ? 'Copied to clipboard' : 'Copy to clipboard'}
+                  {copied ? 'Preview link copied to clipboard' : 'Share link to preview'}
                 </Button>
               )}
             </CopyButton>

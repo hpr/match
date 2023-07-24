@@ -73,7 +73,7 @@ export const AthleteAutocomplete = ({
         return true;
       }}
       label="Add athlete"
-      placeholder="e.g. Asbel Kiprop"
+      placeholder="e.g. Fred Kerley"
       data={data}
       value={athlete}
       onChange={setAthlete}
