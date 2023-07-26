@@ -32,8 +32,8 @@ export default function App() {
   const combinedAthleteInfo = { ...urlAthleteInfo, ...athleteInfo };
 
   useEffect(() => {
-    if (window.location.search) {
-      const params = new URLSearchParams(window.location.search);
+    if (window.location.hash) {
+      const params = new URLSearchParams(window.location.hash.slice(1));
       const athleteYears = JSON.parse(params.get('athleteYears') ?? '{}');
       const athleteIds = JSON.parse(params.get('athleteIds') ?? '[]');
       const discipline = params.get('discipline');
@@ -170,7 +170,7 @@ export default function App() {
               value={
                 window.location.origin +
                 window.location.pathname +
-                '?' +
+                '#' +
                 new URLSearchParams({
                   athleteIds: JSON.stringify(snapshotParams?.athleteIds),
                   athleteYears: JSON.stringify(snapshotParams?.athleteYears),
