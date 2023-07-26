@@ -176,7 +176,7 @@ export const disciplines = [
   '400m Masters',
   '800m Masters',
 ] as const;
-export const commonDisciplines: (typeof disciplines[number])[] = [
+export const commonDisciplines: (typeof disciplines)[number][] = [
   // '50 Metres',
   // '55 Metres',
   '60 Metres',
@@ -267,4 +267,5 @@ export const commonDisciplines: (typeof disciplines[number])[] = [
   // 'Heptathlon Boys',
   // 'Octathlon Boys',
   // 'Decathlon',
-]
+];
+export const MAX_ATHLETES = 12;

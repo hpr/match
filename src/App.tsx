@@ -4,7 +4,7 @@ import { AthleteAutocomplete } from './AthleteAutocomplete';
 import { AthleteInfo, CompetitorBasicInfo } from './types';
 import { competitorBasicInfo, getAvatarUrl } from './util';
 import { InfoCircle, Trash } from 'tabler-icons-react';
-import { SERVER_URL, commonDisciplines } from './const';
+import { MAX_ATHLETES, SERVER_URL, commonDisciplines } from './const';
 import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
 
 export default function App() {
@@ -72,7 +72,7 @@ export default function App() {
                   setAthleteBasicInfo({ ...athleteBasicInfo, [id]: basicInfo });
                 }
               }}
-              disabled={athleteIds.length >= 8}
+              disabled={athleteIds.length >= MAX_ATHLETES}
               athleteInfo={athleteInfo}
               setAthleteInfo={setAthleteInfo}
             />
