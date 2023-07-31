@@ -147,47 +147,47 @@ const commonDisciplines = [
 
 (async () => {
   for (const temperature of [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]) {
-  if (fs.existsSync(`script/roadto_${temperature}.json`)) continue;
-  const previews = {}; // JSON.parse(fs.readFileSync(FILENAME, 'utf-8'));
-  for (const discipline of commonDisciplines) {
-    for (const gender of ['Men', 'Women']) {
-      const genderedEvt = `${gender}'s ${discipline.replace(' Metres', 'm').replace(' Hurdles', 'H').replace(' Steeplechase', 'SC')}`;
-      if (previews[genderedEvt]) continue;
-      const eventId = events[genderedEvt];
-      if (eventId) {
-        console.log(genderedEvt);
-        const { data } = await (
-          await fetch(GRAPHQL_ENDPOINT, {
-            headers,
-            method: 'POST',
-            body: JSON.stringify({
-              operationName: 'GetChampionshipQualifications',
-              query: GetChampionshipQualifications,
-              variables: {
-                competitionId: BUDAPEST_ID,
-                eventId,
-              },
-            }),
-          })
-        ).json();
-        const entryNumber = data.getChampionshipQualifications.entryNumber;
-        const athletes = data.getChampionshipQualifications.qualifications
-          .map((q) => ({
-            id: q.urlSlug.split('-').at(-1),
-            year: '2023',
-          }))
-          .slice(0, 6);
-        const { response } = await (
-          await fetch('https://habs.sdf.org:8080/match', {
-            method: 'POST',
-            body: JSON.stringify({ athletes, gender, discipline, temperature }),
-          })
-        ).json();
-        console.log(response.replaceAll('\n', '\\n').slice(0, 500));
-        previews[genderedEvt] = response;
-        fs.writeFileSync(`script/roadto_${temperature}.json`, JSON.stringify(previews));
+    if (fs.existsSync(`script/roadto_${temperature}.json`)) continue;
+    const previews = {}; // JSON.parse(fs.readFileSync(FILENAME, 'utf-8'));
+    for (const discipline of commonDisciplines) {
+      for (const gender of ['Men', 'Women']) {
+        const genderedEvt = `${gender}'s ${discipline.replace(' Metres', 'm').replace(' Hurdles', 'H').replace(' Steeplechase', 'SC')}`;
+        if (previews[genderedEvt]) continue;
+        const eventId = events[genderedEvt];
+        if (eventId) {
+          console.log(genderedEvt);
+          const { data } = await (
+            await fetch(GRAPHQL_ENDPOINT, {
+              headers,
+              method: 'POST',
+              body: JSON.stringify({
+                operationName: 'GetChampionshipQualifications',
+                query: GetChampionshipQualifications,
+                variables: {
+                  competitionId: BUDAPEST_ID,
+                  eventId,
+                },
+              }),
+            })
+          ).json();
+          const entryNumber = data.getChampionshipQualifications.entryNumber;
+          const athletes = data.getChampionshipQualifications.qualifications
+            .map((q) => ({
+              id: q.urlSlug.split('-').at(-1),
+              year: '2023',
+            }))
+            .slice(0, 6);
+          const { response } = await (
+            await fetch('https://habs.sdf.org:8080/match', {
+              method: 'POST',
+              body: JSON.stringify({ athletes, gender, discipline, temperature }),
+            })
+          ).json();
+          console.log(response.replaceAll('\n', '\\n').slice(0, 500));
+          previews[genderedEvt] = response;
+          fs.writeFileSync(`script/roadto_${temperature}.json`, JSON.stringify(previews));
+        }
       }
     }
-  }
   }
 })();
