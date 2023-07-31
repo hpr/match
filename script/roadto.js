@@ -178,7 +178,7 @@ const commonDisciplines = [
         const { response } = await (
           await fetch('https://habs.sdf.org:8080/match', {
             method: 'POST',
-            body: JSON.stringify({ athletes, gender, discipline }),
+            body: JSON.stringify({ athletes, gender, discipline, temperature: 0 }),
           })
         ).json();
         console.log(response.replaceAll('\n', '\\n').slice(0, 500));
