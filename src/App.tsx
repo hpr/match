@@ -2,7 +2,7 @@ import { Avatar, Button, Group, Paper, Stack, Table, Text, ActionIcon, Select, C
 import React, { useEffect, useState } from 'react';
 import { AthleteAutocomplete } from './AthleteAutocomplete';
 import { AthleteInfo, CompetitorBasicInfo } from './types';
-import { competitorBasicInfo, getAvatarUrl } from './util';
+import { competitorBasicInfo, getAvatarUrl, normalize } from './util';
 import { InfoCircle, Trash } from 'tabler-icons-react';
 import { MAX_ATHLETES, SERVER_URL, commonDisciplines } from './const';
 import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
@@ -155,7 +155,9 @@ export default function App() {
                   }),
                 })
               ).json();
-              setResponse(response);
+              setResponse(
+                normalize(response)
+              );
               setIsGenerating(false);
             }}
           >
@@ -172,10 +174,10 @@ export default function App() {
                 window.location.pathname +
                 '#' +
                 new URLSearchParams({
-                  athleteIds: JSON.stringify(snapshotParams?.athleteIds),
-                  athleteYears: JSON.stringify(snapshotParams?.athleteYears),
-                  athleteInfo: JSON.stringify(snapshotParams?.athleteInfo),
-                  athleteBasicInfo: JSON.stringify(snapshotParams?.athleteBasicInfo),
+                  athleteIds: normalize(JSON.stringify(snapshotParams?.athleteIds)),
+                  athleteYears: normalize(JSON.stringify(snapshotParams?.athleteYears)),
+                  athleteInfo: normalize(JSON.stringify(snapshotParams?.athleteInfo)),
+                  athleteBasicInfo: normalize(JSON.stringify(snapshotParams?.athleteBasicInfo)),
                   discipline: snapshotParams?.discipline!,
                   response: window.btoa(response),
                 })
@@ -188,12 +190,7 @@ export default function App() {
               )}
             </CopyButton>
             <div>
-              <ReactMarkdown>
-                {response
-                  .normalize('NFD')
-                  .replace(/[\u0300-\u036f]/g, '')
-                  .replace(/[^\x00-\x7F]/g, '')}
-              </ReactMarkdown>
+              <ReactMarkdown>{response}</ReactMarkdown>
             </div>
           </Stack>
         </Paper>

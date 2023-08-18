@@ -43,3 +43,9 @@ export const evtSort = (a: string, b: string) => {
   if (gender(a) !== gender(b)) return a.localeCompare(b);
   return Number.parseInt(firstNumericWord(a)) - Number.parseInt(firstNumericWord(b));
 };
+
+export const normalize = (str: string) =>
+  str
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^\x00-\x7F]/g, '');
