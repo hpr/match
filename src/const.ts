@@ -238,6 +238,8 @@ export const commonDisciplines: (typeof disciplines)[number][] = [
   // '300 Metres Hurdles',
   // '400m hurdles (84.0cm)',
   '400 Metres Hurdles',
+  '20 Kilometres Race Walk',
+  '35 Kilometres Race Walk',
   'High Jump',
   'Pole Vault',
   'Long Jump',
