@@ -163,8 +163,15 @@ export default function App() {
                 setIsGenerating(false);
                 modals.openConfirmModal({
                   title: 'Error',
-                  children: <Text>There was an error with your request. The prediction model can be inconsistent, so try again or try uusing less athletes? Error Details: {JSON.stringify(err)}</Text>
-                })
+                  children: (
+                    <Text>
+                      There was an error with your request. The prediction model can be inconsistent, so try again or try using less athletes? Error Details:{' '}
+                      {JSON.stringify(err)}
+                    </Text>
+                  ),
+                  labels: { confirm: 'Confirm', cancel: 'Cancel' },
+                  cancelProps: { style: { display: 'none' } },
+                });
               }
             }}
           >
