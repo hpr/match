@@ -6,6 +6,7 @@ import { competitorBasicInfo, getAvatarUrl, normalize } from './util';
 import { InfoCircle, Trash } from 'tabler-icons-react';
 import { MAX_ATHLETES, SERVER_URL, commonDisciplines } from './const';
 import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
+import { modals } from '@mantine/modals';
 
 export default function App() {
   const [athleteIds, setAthleteIds] = useState<string[]>([]);
@@ -145,18 +146,26 @@ export default function App() {
                 athleteInfo: Object.fromEntries(athleteIds.map((aid) => [aid, combinedAthleteInfo[aid]])),
                 athleteBasicInfo: Object.fromEntries(athleteIds.map((aid) => [aid, athleteBasicInfo[aid]])),
               });
-              const { response } = await (
-                await fetch(SERVER_URL, {
-                  method: 'POST',
-                  body: JSON.stringify({
-                    athletes: athleteIds.map((id) => ({ id, year: athleteYears[id] })),
-                    discipline,
-                    gender,
-                  }),
+              try {
+                const { response } = await (
+                  await fetch(SERVER_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                      athletes: athleteIds.map((id) => ({ id, year: athleteYears[id] })),
+                      discipline,
+                      gender,
+                    }),
+                  })
+                ).json();
+                setResponse(normalize(response));
+                setIsGenerating(false);
+              } catch (err) {
+                setIsGenerating(false);
+                modals.openConfirmModal({
+                  title: 'Error',
+                  children: <Text>There was an error with your request. The prediction model can be inconsistent, so try again or try uusing less athletes? Error Details: {JSON.stringify(err)}</Text>
                 })
-              ).json();
-              setResponse(normalize(response));
-              setIsGenerating(false);
+              }
             }}
           >
             {isGenerating ? 'Generating... (Can take a minute)' : 'Generate Prediction'}
