@@ -155,9 +155,7 @@ export default function App() {
                   }),
                 })
               ).json();
-              setResponse(
-                normalize(response)
-              );
+              setResponse(normalize(response));
               setIsGenerating(false);
             }}
           >
@@ -169,19 +167,19 @@ export default function App() {
         <Paper withBorder m="xl" p="md" mt="xs">
           <Stack align="center">
             <CopyButton
-              value={
+              value={normalize(
                 window.location.origin +
-                window.location.pathname +
-                '#' +
-                new URLSearchParams({
-                  athleteIds: normalize(JSON.stringify(snapshotParams?.athleteIds)),
-                  athleteYears: normalize(JSON.stringify(snapshotParams?.athleteYears)),
-                  athleteInfo: normalize(JSON.stringify(snapshotParams?.athleteInfo)),
-                  athleteBasicInfo: normalize(JSON.stringify(snapshotParams?.athleteBasicInfo)),
-                  discipline: snapshotParams?.discipline!,
-                  response: window.btoa(response),
-                })
-              }
+                  window.location.pathname +
+                  '#' +
+                  new URLSearchParams({
+                    athleteIds: JSON.stringify(snapshotParams?.athleteIds),
+                    athleteYears: JSON.stringify(snapshotParams?.athleteYears),
+                    athleteInfo: JSON.stringify(snapshotParams?.athleteInfo),
+                    athleteBasicInfo: JSON.stringify(snapshotParams?.athleteBasicInfo),
+                    discipline: snapshotParams?.discipline!,
+                    response: window.btoa(response),
+                  })
+              )}
             >
               {({ copied, copy }) => (
                 <Button mb={-10} size="sm" color={copied ? 'teal' : 'blue'} onClick={copy}>
