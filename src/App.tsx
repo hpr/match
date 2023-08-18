@@ -188,7 +188,7 @@ export default function App() {
               )}
             </CopyButton>
             <div>
-              <ReactMarkdown>{response}</ReactMarkdown>
+              <ReactMarkdown>{response.normalize('NFD').replace(/[\u0300-\u036f]/g, '')}</ReactMarkdown>
             </div>
           </Stack>
         </Paper>
