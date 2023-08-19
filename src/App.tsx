@@ -125,7 +125,7 @@ export default function App() {
               </Table>
             ) : (
               <Text italic style={{ textAlign: 'center' }}>
-                Add athletes of the same category above...
+                Add athletes of the same gender above...
               </Text>
             )}
           </Paper>
@@ -209,6 +209,10 @@ export default function App() {
           </Stack>
         </Paper>
       )}
+      <Text italic>
+        Contact: <a href="mailto:habs@sdf.org">habs@sdf.org</a> <span style={{ fontStyle: 'normal' }}>|</span>{' '}
+        <a href="https://github.com/hpr/match">Source Code</a>
+      </Text>
     </Stack>
   );
 }
