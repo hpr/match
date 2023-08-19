@@ -175,7 +175,7 @@ export default function App() {
               }
             }}
           >
-            {isGenerating ? 'Generating... (Can take a minute)' : 'Generate Prediction'}
+            {isGenerating ? 'Generating... (takes 1-2 minutes)' : 'Generate Prediction'}
           </Button>
         </Stack>
       </Paper>
