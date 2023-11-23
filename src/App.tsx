@@ -125,7 +125,7 @@ export default function App() {
               </Table>
             ) : (
               <Text italic style={{ textAlign: 'center' }}>
-                Add athletes of the same gender above...
+                Add athletes of the same gender / event category above...
               </Text>
             )}
           </Paper>

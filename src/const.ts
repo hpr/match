@@ -1,5 +1,5 @@
 export const SERVER_URL = 'https://habs.sdf.org:8080/match';
-export const GRAPHQL_ENDPOINT = 'https://cmqivfcisjb3viqolzsggmd3ea.appsync-api.eu-west-1.amazonaws.com/graphql';
+export const GRAPHQL_ENDPOINT = 'https://wpgiegzkbrhj5mlsdxnipboepm.appsync-api.eu-west-1.amazonaws.com/graphql';
 export const headers = {
   'content-type': 'application/json',
   'x-api-key': 'da2-yhjrcquonnb3bncekqi5j2pggy',
