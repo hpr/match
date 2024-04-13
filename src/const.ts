@@ -1,8 +1,9 @@
 export const SERVER_URL = 'https://habs.sdf.org:8080/match';
-export const GRAPHQL_ENDPOINT = 'https://tppcjbjqljd4tj7my77t466hn4.appsync-api.eu-west-1.amazonaws.com/graphql';
+export const GRAPHQL_ENDPOINT = 'https://jsyr3xmt7nchpjukzohfslxfre.appsync-api.eu-west-1.amazonaws.com/graphql';
+export const GRAPHQL_API_KEY = 'da2-o5lb23etxbe3viqhbquknwoazq'; // intentionally public
 export const headers = {
   'content-type': 'application/json',
-  'x-api-key': 'da2-fulcgci74bbslidixnmkcr6sxu',
+  'x-api-key': GRAPHQL_API_KEY,
 };
 export const SearchCompetitors = `query SearchCompetitors($query: String, $gender: GenderType, $disciplineCode: String, $environment: String, $countryCode: String) {
   searchCompetitors(query: $query, gender: $gender, disciplineCode: $disciplineCode, environment: $environment, countryCode: $countryCode) {
