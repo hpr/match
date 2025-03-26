@@ -1,6 +1,6 @@
 export const SERVER_URL = 'https://habs.sdf.org:8080/match';
-export const GRAPHQL_ENDPOINT = 'https://graphql-prod-4707.prod.aws.worldathletics.org/graphql';
-export const GRAPHQL_API_KEY = 'da2-fxf3r4jszngxjgwhjfkpfvd4li'; // intentionally public
+export const GRAPHQL_ENDPOINT = 'https://graphql-prod-4746.prod.aws.worldathletics.org/graphql';
+export const GRAPHQL_API_KEY = 'da2-lkoax6kydng4pglnfp2ytqmrte'; // intentionally public
 export const headers = {
   'content-type': 'application/json',
   'x-api-key': GRAPHQL_API_KEY,
