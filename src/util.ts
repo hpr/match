@@ -1,11 +1,14 @@
-import { GRAPHQL_ENDPOINT, GetCompetitorBasicInfo, SearchCompetitors, headers } from './const';
-import { CompetitorBasicInfo, SearchCompetitor } from './types';
+import { GetCompetitorBasicInfo, SearchCompetitors } from './const';
+import { CompetitorBasicInfo, SearchCompetitor, WaApi } from './types';
 
-export const searchCompetitors = async (query: string): Promise<SearchCompetitor[]> => {
+export const searchCompetitors = async (query: string, waApi: WaApi): Promise<SearchCompetitor[]> => {
   const { data } = await (
-    await fetch(GRAPHQL_ENDPOINT, {
+    await fetch(waApi.endpoint, {
       method: 'POST',
-      headers,
+      headers: {
+        'content-type': 'application/json',
+        'x-api-key': waApi.apiKey,
+      },
       body: JSON.stringify({
         operationName: 'SearchCompetitors',
         variables: { query },
@@ -16,11 +19,14 @@ export const searchCompetitors = async (query: string): Promise<SearchCompetitor
   return data.searchCompetitors;
 };
 
-export const competitorBasicInfo = async (id: string): Promise<CompetitorBasicInfo> => {
+export const competitorBasicInfo = async (id: string, waApi: WaApi): Promise<CompetitorBasicInfo> => {
   const { data } = await (
-    await fetch(GRAPHQL_ENDPOINT, {
+    await fetch(waApi.endpoint, {
       method: 'POST',
-      headers,
+      headers: {
+        'content-type': 'application/json',
+        'x-api-key': waApi.apiKey,
+      },
       body: JSON.stringify({
         operationName: 'GetCompetitorBasicInfo',
         query: GetCompetitorBasicInfo,
@@ -44,8 +50,21 @@ export const evtSort = (a: string, b: string) => {
   return Number.parseInt(firstNumericWord(a)) - Number.parseInt(firstNumericWord(b));
 };
 
-export const normalize = (str: string) =>
-  str
+export const normalize = (str: string) => {
+  const replacements: { [key: string]: string } = {
+    '—': '-',   // Em dash
+    '–': '-',   // En dash
+    '‘': "'",   // Left single quote
+    '’': "'",   // Right single quote
+    '“': '"',   // Left double quote
+    '”': '"',   // Right double quote
+    '…': '...', // Ellipsis
+  };
+  const regex = new RegExp(`[${Object.keys(replacements).join('')}]`, 'g');
+
+  return str
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
+    .replace(regex, (char) => replacements[char])
     .replace(/[^\x00-\x7F]/g, '');
+}

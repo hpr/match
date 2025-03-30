@@ -1,10 +1,5 @@
-export const SERVER_URL = 'https://habs.sdf.org:8080/match';
-export const GRAPHQL_ENDPOINT = 'https://graphql-prod-4746.prod.aws.worldathletics.org/graphql';
-export const GRAPHQL_API_KEY = 'da2-lkoax6kydng4pglnfp2ytqmrte'; // intentionally public
-export const headers = {
-  'content-type': 'application/json',
-  'x-api-key': GRAPHQL_API_KEY,
-};
+export const SERVER_BASE = 'https://habs.sdf.org:8080';
+export const SERVER_URL = SERVER_BASE + '/match';
 export const SearchCompetitors = `query SearchCompetitors($query: String, $gender: GenderType, $disciplineCode: String, $environment: String, $countryCode: String) {
   searchCompetitors(query: $query, gender: $gender, disciplineCode: $disciplineCode, environment: $environment, countryCode: $countryCode) {
     aaAthleteId

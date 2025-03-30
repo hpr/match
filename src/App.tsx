@@ -1,10 +1,10 @@
 import { Avatar, Button, Group, Paper, Stack, Table, Text, ActionIcon, Select, CopyButton, Alert } from '@mantine/core';
 import React, { useEffect, useState } from 'react';
 import { AthleteAutocomplete } from './AthleteAutocomplete';
-import { AthleteInfo, CompetitorBasicInfo } from './types';
+import { AthleteInfo, CompetitorBasicInfo, WaApi } from './types';
 import { competitorBasicInfo, getAvatarUrl, normalize } from './util';
 import { InfoCircle, Trash } from 'tabler-icons-react';
-import { MAX_ATHLETES, SERVER_URL, commonDisciplines } from './const';
+import { MAX_ATHLETES, SERVER_BASE, SERVER_URL, commonDisciplines } from './const';
 import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
 import { modals } from '@mantine/modals';
 
@@ -18,6 +18,7 @@ export default function App() {
   const [discipline, setDiscipline] = useState<string | null>(null);
   const [response, setResponse] = useState<string | null>(null);
   const [isSnapshot, setIsSnapshot] = useState<boolean>(false);
+  const [waApi, setWaApi] = useState<WaApi | null>(null);
   const [snapshotParams, setSnapshotParams] = useState<{
     athleteYears: { [id: string]: string };
     athleteIds: string[];
@@ -33,6 +34,8 @@ export default function App() {
   const combinedAthleteInfo = { ...urlAthleteInfo, ...athleteInfo };
 
   useEffect(() => {
+    fetch(SERVER_BASE + '/wa').then(r => r.json()).then(setWaApi);
+
     if (window.location.hash) {
       const params = new URLSearchParams(window.location.hash.slice(1));
       const athleteYears = JSON.parse(params.get('athleteYears') ?? '{}');
@@ -62,12 +65,13 @@ export default function App() {
       <Paper withBorder m="xl" p="md" mb="xs">
         <Stack justify="center" align="center">
           <Group position="center">
-            <AthleteAutocomplete
+            {!!waApi && <AthleteAutocomplete
+              waApi={waApi}
               gender={gender}
               addAthlete={async (id) => {
                 if (!athleteIds.includes(id)) {
                   setAthleteIds([...athleteIds, id]);
-                  const basicInfo = await competitorBasicInfo(id);
+                  const basicInfo = await competitorBasicInfo(id, waApi!);
                   const activeYears = basicInfo.resultsByYear.activeYears;
                   setAthleteYears({ ...athleteYears, [id]: activeYears[0] });
                   setAthleteBasicInfo({ ...athleteBasicInfo, [id]: basicInfo });
@@ -76,7 +80,7 @@ export default function App() {
               disabled={athleteIds.length >= MAX_ATHLETES}
               athleteInfo={athleteInfo}
               setAthleteInfo={setAthleteInfo}
-            />
+            />}
           </Group>
           <Paper withBorder m="sm" mb={0} p="md" sx={{ width: '100%' }}>
             {athleteIds.length ? (

@@ -58,3 +58,5 @@ export type Competitor = {
     }[];
   };
 };
+
+export type WaApi = { apiKey: string, endpoint: string };

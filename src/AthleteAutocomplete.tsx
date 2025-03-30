@@ -1,6 +1,6 @@
 import { Autocomplete, Avatar, Button, Group, SelectItemProps, Text } from '@mantine/core';
 import { forwardRef, useEffect, useState } from 'react';
-import { AthleteInfo, SearchCompetitor } from './types';
+import { AthleteInfo, SearchCompetitor, WaApi } from './types';
 import { useDebouncedValue } from '@mantine/hooks';
 import { getAvatarUrl, searchCompetitors } from './util';
 
@@ -37,19 +37,21 @@ export const AthleteAutocomplete = ({
   disabled = false,
   athleteInfo = {},
   setAthleteInfo = () => {},
+  waApi,
 }: {
   gender: 'Men' | 'Women' | undefined;
   addAthlete: (id: string) => void;
   disabled: boolean;
   athleteInfo: AthleteInfo;
   setAthleteInfo: (athleteInfo: AthleteInfo) => void;
+  waApi: WaApi,
 }) => {
   const [athlete, setAthlete] = useState<string>('');
   const [debouncedAthlete] = useDebouncedValue(athlete, 500);
   const [cachedResults, setCachedResults] = useState<{ [k: string]: SearchCompetitor[] }>({});
   useEffect(() => {
     (async () => {
-      const results = cachedResults[athlete] ?? (await searchCompetitors(debouncedAthlete));
+      const results = cachedResults[athlete] ?? (await searchCompetitors(debouncedAthlete, waApi));
       setCachedResults({ ...cachedResults, [athlete]: results });
       setAthleteInfo({
         ...athleteInfo,
